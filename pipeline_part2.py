@@ -320,10 +320,6 @@ def pipeline(args):
                         try:
                             ANV_f = ANVmask[start]
                             cell_f = trackedD[start][ApoBD_cell_index]
-                            #mask_stack_c[start,:,:] = seq2mask(cell_f)
-                            #mask_stack_s[start,:,:] = np.logical_and(seq2mask(cell_f), B[start,:,:])
-                            #mask_stack_s[start,:,:] = screen_region(B[start,:,:], seq2mask(cell_f))
-                            #print('found before TApoBD')
                             IOU_f = getIOU(seq2mask(cell_f), np.logical_and(seq2mask(cell_f), ANV_f))
                             Th1 = filters.threshold_otsu(markerANV[start,:,:])
                             Th2 = filters.threshold_otsu(markerANV[start,:,:][seq2mask(cell_f)])
@@ -333,36 +329,7 @@ def pipeline(args):
                                 RR13=start
                                 break
                             
-                            
-                            #contact_f = np.logical_and(B[start,:,:], seq2mask(cell_f))
-                            
-                            #test_ANV = markerANV[start,:,:]
-                            
-                            #cell_rest = [cell for cell in trackedD[start] if cell!=cell_f]+[cell for cell in rest_seq[start+TApoBD]]
-                            
-                            #for cr in cell_rest:
-                            #    test_ANV = np.where(seq2mask(cr)==True, np.amin(test_ANV), test_ANV)
-                            
-                            #RR15 = max(RR15, IOU_f)
-                            #IOU_c = getIOU(contact_f, np.logical_and(contact_f, ANV_f))
-                            #PCC_cont = pPCC(contact_f.astype(np.uint8), test_ANV)#ANV_f.astype(np.uint8)))
-                            #PCC_cell = pPCC(seq2mask(cell_f).astype(np.uint8), test_ANV) 
-                            #print('pcc check', PCC_cont, PCC_cell)       
-                            #if np.amax(contact_f)==True:
-                            #    RR20 = [start,RR20][np.argmax([IOU_c, RR19])]
-                            #    RR19 = max(IOU_c, RR19)
-                            #    RR22 = [start, RR22][np.argmax([PCC_cont-PCC_cell, RR21])]
-                            #    RR21 = max(PCC_cont-PCC_cell,RR21)
-                            #    RR24 = [start, RR24][np.argmax([PCC_cont, RR23])]
-                            #    RR25 = [PCC_cell, RR25][np.argmax([PCC_cont, RR23])]
-                            #    RR23 = max(PCC_cont, RR23)
-                                
-        
-        
-        
-                            
-                                        
-                                
+                             
                         except:
                             print('not tracked')
                         start+=1
@@ -415,19 +382,7 @@ def pipeline(args):
                     otherseq = T_seq
                 trackedD = trackerD.Run_Tracking()
                 start, step = 0,1
-                #frameApoBD = trackedD[TApoBD-T1] 
-                #if RR13>=TApoBD:
-                #    frameApoBD = trackedD[0]
-                #    ApoBD_cell_index = [f[0] for f in frameApoBD if f[1:-1]==ApoBDcell_ori[1:-1]]
-                #    start=0
-                #    step=1
-    
-                #else:
-                #    frameApoBD = trackedD[-1]
-                #    ApoBD_cell_index = [f[0] for f in frameApoBD if f[1:-1]==ApoBDcell_ori[1:-1]]
-                #    start=0
-                #    step=1
-                #print('index found: ',ApoBD_cell_index)
+
                 
                 
                 for ind in range(len(trackedD)):
@@ -463,41 +418,7 @@ def pipeline(args):
                     except:
                         print('something missing in index:', str(T1+int(ind*(step))))
                 
-                           
-            
-                
-                            #contact_f = np.logical_and(B[start+TApoBD,:,:], seq2mask(cell_f))
-                            #cell_rest = [cell for cell in trackedD[start] if cell!=cell_f]+[cell for cell in rest_seq[start+TApoBD]]
-                            #test_ANV = markerANV[start+TApoBD,:,:]
-                            #for cr in cell_rest:
-                            #    test_ANV = np.where(seq2mask(cr)==True, np.amin(test_ANV), test_ANV)
-                            
-                            #IOU_c = getIOU(contact_f, np.logical_and(contact_f, ANV_f))
-                            #PCC_cont = pPCC(contact_f.astype(np.uint8), test_ANV)#ANV_f.astype(np.uint8)))
-                            #PCC_cell = pPCC(seq2mask(cell_f).astype(np.uint8), test_ANV)
-                            #RR15 = max(RR15, IOU_f)
-                            #AnVpostApoBD = max(AnVpostApoBD, np.sum(np.logical_and(ANV_f, np.logical_not(seq2mask(cell_f)))))
-                            #AnV_IOU_rest = max(AnV_IOU_rest, max([getIOU(seq2mask(cell), np.logical_and(seq2mask(cell), ANV_f)) for cell in cell_rest]))
-                            #print('pcc check', PCC_cont, PCC_cell)
-                            
-                            #if np.amax(contact_f)==True:
-                            #    RR20 = [start+TApoBD, RR20][np.argmax([IOU_c, RR19])]
-                            #    RR19 = max(IOU_c, RR19)
-                            #    RR22 = [start+TApoBD, RR22][np.argmax([PCC_cont-PCC_cell, RR21])]
-                            #    RR21 = max(PCC_cont-PCC_cell,RR21)
-                            #    RR24 = [start, RR24][np.argmax([PCC_cont, RR23])]
-                            #    RR25 = [PCC_cell, RR25][np.argmax([PCC_cont, RR23])]
-                            #    RR23 = max(PCC_cont, RR23)
-                                
-                          
-                            #0722 use PCC to find AnnV time
-                            #Pccvalue = pPCC(seq2mask(cell_f).astype(np.uint8), test_ANV)#ANV_f.astype(np.uint8)))
-                            #print(pPCC(seq2mask(cell_f).astype(np.uint8), ANV_f.astype(np.uint8)))
-                            #if Pccvalue>0.5 and (start+TApoBD)>=min(ANVtime):
-                            #print(cell_f)
-                        
-                    #AnVpostApoBD = np.sum(np.logical_and(ANV_f, np.logical_not)
-                    
+
     ##STEP4: tracking for contact and event type
          
             print('ApoBD is found in '+ dead_class+' cell')
@@ -623,16 +544,7 @@ def pipeline(args):
                 io.imsave(os.path.join(non_dir, n.replace('.tif','_Dmarker.tif')), markerANV_out)
                 row12.append('non')
                 row2.append(video_len)
-            #if abs(TApoBD-ANVtime[0])>0 and abs(TApoBD-ANVtime[0])<math.inf and dead_class==dead_class_AnnV:#and Enum2==0 and Tnum2==1:
-            #    combined = np.concatenate([testinput, markerANV],axis=-1)
-            #    if TApoBD<ANVtime[0]:
-            #        io.imsave(os.path.join(ApoBD_first_dir, n.replace('.tif','_P+D.tif')), combined)
-            #    else:
-            #        io.imsave(os.path.join(AnnV_first_dir, n.replace('.tif','_P+D.tif')), combined)    
-            
-            
-            
-            
+ 
             row4.append(Tnum2)
             row5.append(Enum2)
             row7.append(n)
@@ -652,18 +564,7 @@ def pipeline(args):
             row17.append(cellPCC)
             row26.append(synapseIOU)
             row27.append(cellIOU)
-        #row15.append(RR15)
-        #APOBDCELLarea = (ApoBDcell_ori[3]-ApoBDcell_ori[1])*(ApoBDcell_ori[4]-ApoBDcell_ori[2])
-        #row16.append(APOBDCELLarea)
-        #row17.append(AnVpostApoBD)
-        #row18.append(AnV_IOU_rest)
-        #row19.append(RR19)
-        #row20.append(RR20)
-        #row21.append(RR21)
-        #row22.append(RR22)
-        #row23.append(RR23)
-        #row24.append(RR24)
-        #row25.append(RR25)
+
                 
         except:
             print(n+' has error')
@@ -671,53 +572,6 @@ def pipeline(args):
     #(pd.DataFrame([row1,row4,row5,row2,row3,row6])).T.to_excel(os.path.join(kill_dir, 'table.xlsx'))
     (pd.DataFrame([row7,row8,row11, row9, row10,row12,row13,row14,row15,row16,row17,row18,row4,row5,row2,row26,row27])).T.to_excel(os.path.join(outputdir, 'table.xlsx'))
     #,row19,row20,row21,row22,row23,row24,row25
-'''
-        if abs(TApoBD-ANVtime[0])>0 and abs(TApoBD-ANVtime[0])<math.inf and found==False:#and Enum2==0 and Tnum2==1:
-            combined = np.concatenate([testinput, markerANV],axis=-1)
-            if TApoBD<ANVtime[0]:
-                io.imsave(os.path.join(ApoBD_first_dir, n.replace('.tif','_P+D.tif')), combined)
-            else:
-                io.imsave(os.path.join(AnnV_first_dir, n.replace('.tif','_P+D.tif')), combined)
-        if celltype_check_3(ApoBDcell, markerT, markerE, TApoBD)==0:
-            io.imsave(os.path.join(T_death_dir, n),A)
-        else:
-            io.imsave(os.path.join(E_death_dir, n),A)
-        
-        
-            
-            
-            
-            firstD, secondD = min(TApoBD, ANVtime[0]), max(TApoBD, ANVtime[0])
-            print('Now track between T= ', firstD, ' and T= ', secondD)
-            trackerD = Basic_Tracker(os.getcwd(), '', '', '', secondD-firstD+1, '', 'dummy', np.amin(CN[firstD:secondD+1]), maskseq[firstD:secondD+1])
-            trackedD = trackerD.Run_Tracking()
-            frameApoBD, frameAnnV = trackedD[0 if TApoBD==firstD else -1], trackedD[-1 if TApoBD==firstD else 0]
-            print('-----')
-            print(ApoBDcell)
-            print(frameApoBD)
-            print(AnnvCell)
-            print(frameAnnV)
-            print('-----')
-            
-            tracked_ApoBD, tracked_AnnV = [f for f in frameApoBD if f[1:]==ApoBDcell[1:]][0], [f for f in frameAnnV if f[1:]==AnnvCell[1:]][0]
-            
-            
-
-            print('AnnV check result is: ', frameApoBD[0]==frameAnnV[0])
-            
-            #print([f[1:]==ApoBDcell[1:] for f in frameApoBD], [f[1:]==AnnvCell[1:] for f in frameAnnV])
-            
-            
-            #start1 = ANVtime[0]-1
-            #visua1_AnV1, visual_AnV2  = [markerANV[k,:,:] for k in range(start1,start1+5)], [testinput[k,:,:] for k in range(start1,start1+5)]
-            #visual_AnV1, visual_AnV2 = np.concatenate([a for a in visual_AnV1], axis=-1), np.concatenate([a for a in visual_AnV2], axis=-1)
-            #start2 = TApoBD-1
-            #visua1_ApoBD1, visual_ApoBD2  = [markerANV[k,:,:] for k in range(start2,start2+5)], [testinput[k,:,:] for k in range(start2,start2+5)]
-            #visual_ApoBD1, visual_ApoBD2 = np.concatenate([a for a in visual_ApoBD1], axis=-1), np.concatenate([a for a in visual_ApoBD2], axis=-1)
-            
-''' 
-#    def profile(args):
-#        print('still working on it')
 
 
 
@@ -742,7 +596,3 @@ if __name__ == "__main__":
     print('ApoBD mode is:', args.ApoBDmode)
     print('ApoBD time is from:', args.ApoBD_Time)
     pipeline(args)
-    #if args.generate_all:
-    #    pipeline(args)
-    #else:
-    #    profiling(args)
